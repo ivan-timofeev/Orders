@@ -7,13 +7,16 @@ namespace Orders.BackgroundServices;
 
 public class StartProcessingOfCreatedOrdersBackgroundService : BackgroundService
 {
+    private readonly ILogger<StartProcessingOfCreatedOrdersBackgroundService> _logger;
     private readonly IDbContextFactory<OrdersDbContext> _dbContextFactory;
     private readonly IOrdersManagementService _ordersManagementService;
 
     public StartProcessingOfCreatedOrdersBackgroundService(
+        ILogger<StartProcessingOfCreatedOrdersBackgroundService> logger,
         IDbContextFactory<OrdersDbContext> dbContextFactory,
         IOrdersManagementService ordersManagementService)
     {
+        _logger = logger;
         _dbContextFactory = dbContextFactory;
         _ordersManagementService = ordersManagementService;
     }
@@ -49,7 +52,19 @@ public class StartProcessingOfCreatedOrdersBackgroundService : BackgroundService
 
         foreach (var orderId in orders)
         {
-            _ordersManagementService.MakeRequestToReserveOrderItems(orderId);
+            try
+            {
+                _ordersManagementService.MakeRequestToReserveOrderItems(orderId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    "An error occurred while trying to MakeRequestToReserveOrderItems. " +
+                    "Processing will continue after 120s.\nMessage: {M}",
+                    ex.Message);
+                Thread.Sleep(120_000);
+                break;
+            }
         }
     }
 }

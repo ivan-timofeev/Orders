@@ -1,3 +1,4 @@
+using IdentityProvider;
 using Microsoft.EntityFrameworkCore;
 using Orders.BackgroundServices;
 using Orders.Data;
@@ -9,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddConfiguredSwaggerGen();
+builder.Services.AddJwtAuth(builder.Configuration);
 
 var connectionString = builder.Configuration["OrdersSqlConnectionString"];
 builder.Services.AddDbContextFactory<OrdersDbContext>(
@@ -25,6 +27,7 @@ builder.Services.AddHostedService<ReserveItemsResponseProcessingBackgroundServic
 
 
 var app = builder.Build();
+app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();

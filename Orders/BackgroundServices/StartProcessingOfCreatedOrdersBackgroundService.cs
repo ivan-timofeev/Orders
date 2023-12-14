@@ -29,8 +29,16 @@ public class StartProcessingOfCreatedOrdersBackgroundService : BackgroundService
             {
                 if (cancellationToken.IsCancellationRequested)
                     return Task.CompletedTask;
-            
-                ExecuteInternal();
+
+                try
+                {
+                    ExecuteInternal();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Fail to execute iteration. Message: {M}", ex.Message);
+                }
+
                 Thread.Sleep(millisecondsTimeout: 60_000);
             }
         }, cancellationToken);

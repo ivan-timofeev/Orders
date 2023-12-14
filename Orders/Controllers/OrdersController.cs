@@ -49,6 +49,9 @@ public class OrdersController : ControllerBase
     {
         try
         {
+            int a = 1000;
+            if (a == 1000)
+                throw new Exception("Check branch protection");
             var orderId = _ordersManagementService.CreateOrder(createOrderDto);
 
             return Ok(orderId);

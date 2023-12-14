@@ -20,6 +20,10 @@ public class OrdersController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
+        int a = 1;
+        if (a == 1)
+            throw new Exception("Test ci/cd");
+        
         var orders = _ordersManagementService
             .GetAllOrders()
             .Select(

@@ -53,4 +53,4 @@ jobs:
         revision-image-url: cr.yandex/${{ secrets.YC_REGISTRY_ID }}/orders:latest
         revision-service-account-id: ${{ secrets.YC_SA_ID }}
         revision-env: |
-          TEST=12345
+          ASPNETCORE_URLS="http://localhost:5001"

@@ -8,6 +8,7 @@ namespace Orders.Services;
 
 public interface IOrdersManagementService
 {
+    IReadOnlyCollection<Order> GetAllOrders();
     Guid CreateOrder(CreateOrderDto createOrderDto);
     void UpdateOrderStatus(Guid orderId, OrderStatusEnum newStatus, string? details = null);
     void MakeRequestToReserveOrderItems(Guid orderId);
@@ -24,6 +25,17 @@ public sealed class OrdersManagementService : IOrdersManagementService
     {
         _dbContextFactory = dbContextFactory;
         _itemsMicroserviceApiClient = itemsMicroserviceApiClient;
+    }
+
+    public IReadOnlyCollection<Order> GetAllOrders()
+    {
+        using var dbContext = _dbContextFactory.CreateDbContext();
+
+        return dbContext
+            .Orders
+            .Include(o => o.RequestedItems)
+            .Include(o => o.OrderStatusHistory)
+            .ToArray();
     }
     
     public Guid CreateOrder(CreateOrderDto createOrderDto)

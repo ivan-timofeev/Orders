@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
-using Orders.Data;
 using Orders.Models.DataTransferObjects;
 using Orders.Services;
 
@@ -11,29 +9,19 @@ namespace Orders.Controllers;
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {
-    private readonly ILogger<OrdersController> _logger;
     private readonly IOrdersManagementService _ordersManagementService;
-    private readonly IDbContextFactory<OrdersDbContext> _dbContextFactory;
 
-    public OrdersController(
-        ILogger<OrdersController> logger,
-        IOrdersManagementService ordersManagementService,
-        IDbContextFactory<OrdersDbContext> dbContextFactory)
+    public OrdersController(IOrdersManagementService ordersManagementService)
     {
-        _logger = logger;
         _ordersManagementService = ordersManagementService;
-        _dbContextFactory = dbContextFactory;
     }
 
     // GET: api/orders/
     [HttpGet]
     public IActionResult GetAll()
     {
-        using var dbContext = _dbContextFactory.CreateDbContext();
-        var orders = dbContext
-            .Orders
-            .Include(o => o.RequestedItems)
-            .Include(o => o.OrderStatusHistory)
+        var orders = _ordersManagementService
+            .GetAllOrders()
             .Select(
                 o => new OrderDto
                 {
@@ -62,9 +50,8 @@ public class OrdersController : ControllerBase
         try
         {
             var orderId = _ordersManagementService.CreateOrder(createOrderDto);
-            var response = new { Status = "Order created.", OrderId = orderId };
 
-            return Ok(response);
+            return Ok(orderId);
         }
         catch (Exception ex)
         {

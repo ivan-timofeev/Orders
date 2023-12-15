@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Orders.Controllers;
 using Orders.Models.DataTransferObjects;
@@ -26,7 +27,9 @@ public class OrdersControllerTests
             .Setup(s => s.CreateOrder(createOrderDto))
             .Returns(createdOrderId);
 
-        var controller = new OrdersController(ordersManagementServiceMock.Object);
+        var controller = new OrdersController(
+            ordersManagementServiceMock.Object,
+            Mock.Of<ILogger<OrdersController>>());
 
         // Act
         var result = controller.CreateOrder(createOrderDto);
@@ -45,7 +48,9 @@ public class OrdersControllerTests
             Guid.NewGuid(),
             new[] { new RequestedItemDto(Guid.NewGuid(), 10) });
         
-        var controller = new OrdersController(null!);
+        var controller = new OrdersController(
+            null!,
+            Mock.Of<ILogger<OrdersController>>());
 
         // Act
         var result = controller.CreateOrder(createOrderDto);

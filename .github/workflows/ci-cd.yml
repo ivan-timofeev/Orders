@@ -54,3 +54,7 @@ jobs:
         revision-service-account-id: ${{ secrets.YC_SA_ID }}
         revision-env: |
           ASPNETCORE_URLS=http://127.0.0.1:8080
+          Jwt__Key=${{ secrets.JWT_SECRET_KEY }}
+          OrdersSqlConnectionString=${{ secrets.YC_SQL_CONNECTION_STRING }}
+          
+          

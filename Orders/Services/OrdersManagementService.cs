@@ -18,24 +18,34 @@ public sealed class OrdersManagementService : IOrdersManagementService
 {
     private readonly IDbContextFactory<OrdersDbContext> _dbContextFactory;
     private readonly IItemsMicroserviceApiClient _itemsMicroserviceApiClient;
+    private readonly ILogger<OrdersManagementService> _logger;
 
     public OrdersManagementService(
         IDbContextFactory<OrdersDbContext> dbContextFactory,
-        IItemsMicroserviceApiClient itemsMicroserviceApiClient)
+        IItemsMicroserviceApiClient itemsMicroserviceApiClient,
+        ILogger<OrdersManagementService> logger)
     {
         _dbContextFactory = dbContextFactory;
         _itemsMicroserviceApiClient = itemsMicroserviceApiClient;
+        _logger = logger;
     }
 
     public IReadOnlyCollection<Order> GetAllOrders()
     {
+        _logger.LogInformation("api/orders/: Create db context");
         using var dbContext = _dbContextFactory.CreateDbContext();
-
-        return dbContext
+        _logger.LogInformation("api/orders/: Db context created");
+        
+        
+        _logger.LogInformation("api/orders/: Select orders");
+        var result = dbContext
             .Orders
             .Include(o => o.RequestedItems)
             .Include(o => o.OrderStatusHistory)
             .ToArray();
+        _logger.LogInformation("api/orders/: Orders selected");
+
+        return result;
     }
     
     public Guid CreateOrder(CreateOrderDto createOrderDto)

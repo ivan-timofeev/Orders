@@ -62,6 +62,8 @@ public sealed class ReserveItemsResponseProcessingBackgroundService : Background
         var factory = new ConnectionFactory
         {
             HostName = _configuration["RabbitMqHostName"],
+            UserName = "guest",
+            Password = _configuration["RabbitMqPassword"],
             AutomaticRecoveryEnabled = true
         };
 

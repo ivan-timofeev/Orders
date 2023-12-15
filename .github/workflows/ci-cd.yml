@@ -56,4 +56,6 @@ jobs:
             ASPNETCORE_URLS=http://127.0.0.1:8080
             Jwt__Key=${{ secrets.JWT_SECRET_KEY }}
             OrdersSqlConnectionString=${{ secrets.YC_SQL_CONNECTION_STRING }}
-            RabbitMqHostName=${{ secrets.YC_RABBITMQ_PASSWORD }}
+            RabbitMqHostName=${{ secrets.YC_RABBITMQ_HOSTNAME }}
+            RabbitMqPort=${{ secrets.YC_RABBITMQ_PORT }}
+            RabbitMqPassword=${{ secrets.YC_RABBITMQ_PASSWORD }}

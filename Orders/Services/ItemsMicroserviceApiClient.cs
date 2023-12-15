@@ -47,6 +47,9 @@ public sealed class ItemsMicroserviceApiClient : IItemsMicroserviceApiClient, ID
         var factory = new ConnectionFactory
         {
             HostName = _configuration["RabbitMqHostName"],
+            UserName = "guest",
+            Port = int.Parse(_configuration["RabbitMqPort"]!),
+            Password = _configuration["RabbitMqPassword"],
             AutomaticRecoveryEnabled = true
         };
 

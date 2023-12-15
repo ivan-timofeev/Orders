@@ -10,16 +10,21 @@ namespace Orders.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly IOrdersManagementService _ordersManagementService;
+    private readonly ILogger<OrdersController> _logger;
 
-    public OrdersController(IOrdersManagementService ordersManagementService)
+    public OrdersController(
+        IOrdersManagementService ordersManagementService,
+        ILogger<OrdersController> logger)
     {
         _ordersManagementService = ordersManagementService;
+        _logger = logger;
     }
 
     // GET: api/orders/
     [HttpGet]
     public IActionResult GetAll()
     {
+        _logger.LogInformation("api/orders/: GetAll()");
         var orders = _ordersManagementService
             .GetAllOrders()
             .Select(
